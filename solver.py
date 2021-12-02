@@ -39,10 +39,10 @@ def profitDecay(p, s):
 
 def main():
     if __name__ == '__main__':
-        for input_path in os.listdir('inputs/'):
+        for input_path in os.listdir('inputs/large/'):
             print(input_path)
-            output_path = 'outputs/' + input_path[:-3] + '.out'
-            tasks = read_input_file('inputs/' + input_path)
+            output_path = 'outputs/large/' + input_path[:-3] + '.out'
+            tasks = read_input_file('inputs/large/' + input_path)
             output = solve(tasks)
             write_output_file(output_path, output)
 
