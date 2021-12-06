@@ -11,40 +11,44 @@ def solve(tasks):
         output: list of igloos in order of polishing  
     """
     tasks = [(tasks[i].task_id, tasks[i].deadline, tasks[i].duration, tasks[i].perfect_benefit) for i in range(len(tasks))]
-    tasks.sort(key = lambda x: x[0])
-    tasks = [0] + tasks
-    dp = [[0 for _ in range(EOD)] for _ in range(len(tasks))]
-    scheduledTasks = []
-    scheduled = set()
-    for t in range(1, EOD):
-        for i in range(1, len(tasks)):
+    # tasks.sort(key = lambda x: x[1])
+    dp_profit = [[0 for _ in range(EOD)] for _ in range(len(tasks))]
+    dp_jobs = [[[] for _ in range(EOD)] for _ in range(len(tasks))]
+    for t in range(EOD):
+        for i in range(len(tasks)):
             task = tasks[i]
             id, deadline, duration, profit = task[0], task[1], task[2], task[3]
-            if id in scheduled:
-                continue
             t_latest = min(deadline, t) - duration
             if t_latest < 0:
-                dp[i][t] = dp[i-1][t]
+                dp_profit[i][t] = dp_profit[i-1][t]
             else:
-                if dp[i-1][t] > profit + dp[i-1][t_latest]:
-                    dp[i][t] = dp[i-1][t]
+                if dp_profit[i-1][t] > profit + dp_profit[i-1][t_latest]:
+                    dp_profit[i][t] = dp_profit[i-1][t]
                 else:
-                    dp[i][t] = profit + dp[i-1][t_latest]
-                    scheduledTasks.append(id)
-                    scheduled.add(id)
-    return scheduledTasks
+                    dp_profit[i][t] = profit + dp_profit[i-1][t_latest]
+                    dp_jobs[i][t].append(id)
+        
+    return dp_jobs[-1][-1]
+            
+
 
 def profitDecay(p, s):
     return p*math.e^(-0.017*s)
 
 def main():
     if __name__ == '__main__':
-        for input_path in os.listdir('inputs/large/'):
-            print(input_path)
-            output_path = 'outputs/large/' + input_path[:-3] + '.out'
-            tasks = read_input_file('inputs/large/' + input_path)
-            output = solve(tasks)
-            write_output_file(output_path, output)
+        for size in os.listdir('inputs/'):
+            if size not in ['small', 'medium', 'large']:
+                continue
+            for input_file in os.listdir('inputs/{}/'.format(size)):
+                if size not in input_file:
+                    continue
+                input_path = 'inputs/{}/{}'.format(size, input_file)
+                output_path = 'outputs/{}/{}.out'.format(size, input_file[:-3])
+                print(input_path, output_path)
+                tasks = read_input_file(input_path)
+                output = solve(tasks)
+                write_output_file(output_path, output)
 
 main()
 
@@ -55,3 +59,26 @@ main()
 #         tasks = read_input_file(input_path)
 #         output = solve(tasks)
 #         write_output_file(output_path, output)
+
+
+
+# dp_profit = [[0 for _ in range(EOD)] for _ in range(len(tasks))]
+#     scheduledTasks = []
+#     scheduled = set()
+#     for t in range(EOD):
+#         for i in range(len(tasks)):
+#             task = tasks[i]
+#             id, deadline, duration, profit = task[0], task[1], task[2], task[3]
+#             if id in scheduled:
+#                 continue
+#             t_latest = min(deadline, t) - duration
+#             if t_latest < 0:
+#                 dp_profit[i][t] = dp_profit[i-1][t]
+#             else:
+#                 if dp_profit[i-1][t] > profit + dp_profit[i-1][t_latest]:
+#                     dp_profit[i][t] = dp_profit[i-1][t]
+#                 else:
+#                     dp_profit[i][t] = profit + dp_profit[i-1][t_latest]
+#                     scheduledTasks.append(id)
+#                     scheduled.add(id)
+#     return scheduledTasks
