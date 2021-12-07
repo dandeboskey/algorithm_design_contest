@@ -13,11 +13,13 @@ def solve(tasks):
     tasks = [(tasks[i].task_id, tasks[i].deadline, tasks[i].duration, tasks[i].perfect_benefit) for i in range(len(tasks))]
     # tasks.sort(key = lambda x: x[1])
     #[profit, scheduled Tasks]
-    dp = [[[0, []] for _ in range(len(tasks))] for _ in range(EOD)]
+    dp = [[[0, []] for _ in range(len(tasks) + 1)] for _ in range(EOD)]
     for i in range(len(tasks)):
         task = tasks[i]
         id, deadline, duration, profit = task[0], task[1], task[2], task[3]
         dp[duration][i] = [profit, [id]]
+        for j in range(duration):
+            dp[j][i] = [0, [id]]
     for t in range(EOD):
         for i in range(len(tasks)):
             task = tasks[i]
@@ -31,7 +33,7 @@ def solve(tasks):
                 else:
                     dp[t][i][0] = profit + dp[t_latest][i-1][0]
                     dp[t][i][1].append(id)
-    print("Profit is " + str(dp[-1][-1][0]))
+                    print(dp[t][i][1])
     return dp[-1][-1][1]
             
 
@@ -42,7 +44,7 @@ def profitDecay(p, s):
 def main():
     if __name__ == '__main__':
         for size in os.listdir('inputs/'):
-            if size not in ['small', 'medium', 'large']:
+            if size not in ['small']:#, 'medium', 'large']:
                 continue
             for input_file in os.listdir('inputs/{}/'.format(size)):
                 if size not in input_file:
