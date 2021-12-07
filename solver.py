@@ -1,7 +1,7 @@
 from parse import read_input_file, write_output_file
 import os
 import math
-#items in task jobs (Deadline, Duration, Profit)
+
 EOD = 1440
 def solve(tasks):
     """
@@ -22,8 +22,6 @@ def solve(tasks):
 
     return scheduled
     
-            
-
 
 def profitDecay(p, s):
     return p*math.e^(-0.017*s)
