@@ -14,17 +14,22 @@ def solve(tasks):
     tasks.sort(key = lambda x: x[3] / x[2], reverse = True)
     scheduled = []
     curTime = 0
+    profit = 0
     for id, deadline, duration, profit in tasks:
         if curTime + duration > EOD:
             continue
         scheduled.append(id)
         curTime += duration
-
+        if curTime > deadline:
+            profit += profitDecay(profit, curTime - deadline)
+        else:
+            profit += profit
+    print("Profit is : " + str(profit))
     return scheduled
     
 
 def profitDecay(p, s):
-    return p*math.e^(-0.017*s)
+    return p*math.e**(-0.017*s)
 
 def main():
     if __name__ == '__main__':
