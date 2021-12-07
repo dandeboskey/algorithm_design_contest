@@ -12,23 +12,27 @@ def solve(tasks):
     """
     tasks = [(tasks[i].task_id, tasks[i].deadline, tasks[i].duration, tasks[i].perfect_benefit) for i in range(len(tasks))]
     # tasks.sort(key = lambda x: x[1])
-    dp_profit = [[0 for _ in range(EOD)] for _ in range(len(tasks))]
-    dp_jobs = [[[] for _ in range(EOD)] for _ in range(len(tasks))]
+    #[profit, scheduled Tasks]
+    dp = [[[0, []] for _ in range(len(tasks))] for _ in range(EOD)]
+    for i in range(len(tasks)):
+        task = tasks[i]
+        id, deadline, duration, profit = task[0], task[1], task[2], task[3]
+        dp[duration][i] = [profit, [id]]
     for t in range(EOD):
         for i in range(len(tasks)):
             task = tasks[i]
             id, deadline, duration, profit = task[0], task[1], task[2], task[3]
             t_latest = min(deadline, t) - duration
             if t_latest < 0:
-                dp_profit[i][t] = dp_profit[i-1][t]
+                dp[t][i] = dp[t][i-1]
             else:
-                if dp_profit[i-1][t] > profit + dp_profit[i-1][t_latest]:
-                    dp_profit[i][t] = dp_profit[i-1][t]
+                if dp[t][i-1][0] > profit + dp[t_latest][i-1][0]:
+                    dp[t][i] = dp[t][i-1]
                 else:
-                    dp_profit[i][t] = profit + dp_profit[i-1][t_latest]
-                    dp_jobs[i][t].append(id)
-        
-    return dp_jobs[-1][-1]
+                    dp[t][i][0] = profit + dp[t_latest][i-1][0]
+                    dp[t][i][1].append(id)
+    print("Profit is " + str(dp[-1][-1][0]))
+    return dp[-1][-1][1]
             
 
 
